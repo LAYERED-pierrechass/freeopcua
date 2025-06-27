@@ -563,7 +563,7 @@ void UaClient::EncryptPassword(OpcUa::UserIdentifyToken &identity, const CreateS
           input = sn + input;
         }
 
-        ret = mbedtls_rsa_pkcs1_encrypt( rsa, mbedtls_ctr_drbg_random, &ctr_drbg,input.size(), (const unsigned char*)input.data(), buff );
+        ret = mbedtls_rsa_pkcs1_encrypt( rsa, mbedtls_ctr_drbg_random, &ctr_drbg, MBEDTLS_RSA_PUBLIC, input.size(), (const unsigned char*)input.data(), buff );
         if( ret != 0 ) {
           LOG_ERROR(Logger, "ua_client             | error RSA encryption {}", error2string(ret) );
           goto exit2;
