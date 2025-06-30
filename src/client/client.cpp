@@ -563,7 +563,14 @@ void UaClient::EncryptPassword(OpcUa::UserIdentifyToken &identity, const CreateS
           input = sn + input;
         }
 
+        #ifdef MBEDTLS_RSA_PUBLIC
+        // Legacy MBEDTLS_RSA_PUBLIC present
         ret = mbedtls_rsa_pkcs1_encrypt( rsa, mbedtls_ctr_drbg_random, &ctr_drbg, MBEDTLS_RSA_PUBLIC, input.size(), (const unsigned char*)input.data(), buff );
+        #else
+        // MBEDTLS_RSA_PUBLIC is deprecated
+        ret = mbedtls_rsa_pkcs1_encrypt( rsa, mbedtls_ctr_drbg_random, &ctr_drbg, input.size(), (const unsigned char*)input.data(), buff );
+        #endif
+
         if( ret != 0 ) {
           LOG_ERROR(Logger, "ua_client             | error RSA encryption {}", error2string(ret) );
           goto exit2;
@@ -583,4 +590,3 @@ exit1:
 }
 
 } // namespace OpcUa
-
